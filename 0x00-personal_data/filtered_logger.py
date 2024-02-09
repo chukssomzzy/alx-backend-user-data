@@ -16,6 +16,8 @@ def filter_datum(fields: List[str], redaction: str,
             obfucated
         message (str): a string representing by which character is seperating
             all fields in the log line message
+        seperator (str): a string representing by which character is separating
+            all fields in the log line(message)
     Returns:
         obfuscated str
     """
