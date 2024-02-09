@@ -61,7 +61,7 @@ def get_logger() -> logging.Logger:
     """
     takes no arguments and returns a 'logging.Logger' object
     """
-    logger = logging.Logger('user_data')
+    logger = logging.getLogger('user_data')
     logger.setLevel(logging.DEBUG)
     sh = logging.StreamHandler()
     sh.setLevel(logging.INFO)
