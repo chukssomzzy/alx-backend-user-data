@@ -5,6 +5,8 @@ implemented filtered_logger
 import re
 from typing import List, Union
 import logging
+from mysql.connector import connection
+from os import getenv
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -70,3 +72,13 @@ def get_logger() -> logging.Logger:
     sh.setFormatter(fh)
     logger.addHandler(sh)
     return logger
+
+
+def get_db() -> connection.MySQLConnection:
+    """Returns a connection to a database"""
+    return connection.MySQLConnection(
+        username=getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
+        password=getenv('PERSONAL_DATA_DB_PASSWORD', ''),
+        host=getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
+        database=getenv('PERSONAL_DATA_DB_NAME')
+    )
