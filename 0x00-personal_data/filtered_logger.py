@@ -6,6 +6,7 @@ import re
 from typing import List, Union
 import logging
 from mysql.connector import connection
+import mysql.connector
 from os import getenv
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
@@ -80,9 +81,35 @@ def get_db() -> connection.MySQLConnection:
     Returns:
         mysql connection
     """
-    return connection.MySQLConnection(
-        username=getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
-        password=getenv('PERSONAL_DATA_DB_PASSWORD', ''),
-        host=getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
-        database=getenv('PERSONAL_DATA_DB_NAME')
-    )
+    conn = None
+    try:
+        conn = connection.MySQLConnection(
+            username=getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
+            password=getenv('PERSONAL_DATA_DB_PASSWORD', ''),
+            host=getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
+            database=getenv('PERSONAL_DATA_DB_NAME')
+        )
+    except (mysql.connector.Error, IOError):
+        return connection.MySQLConnection()
+    return conn
+
+
+def main():
+    """
+    Starting point for program execution
+    """
+    db = get_db()
+    logger = get_logger()
+    if db and db.is_connected():
+        with db.cursor() as cursor:
+            cursor.execute("SELECT * FROM users")
+            rows = cursor.fetchall()
+            fields = cursor.column_names
+            for row in rows:
+                logger.info(";".join("{}={}".format(field, val)
+                                     for field, val in zip(fields, row)))
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
