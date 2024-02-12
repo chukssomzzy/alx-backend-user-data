@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ Module of Users views
 """
+from typing import Optional, Tuple
 from api.v1.views import app_views
 from flask import abort, jsonify, request
 from models.user import User
@@ -90,7 +91,7 @@ def create_user() -> str:
 
 
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
-def update_user(user_id: str = None) -> str:
+def update_user(user_id: Optional[str] = None) -> Tuple[str, int]:
     """ PUT /api/v1/users/:id
     Path parameter:
       - User ID
@@ -110,7 +111,7 @@ def update_user(user_id: str = None) -> str:
     rj = None
     try:
         rj = request.get_json()
-    except Exception as e:
+    except Exception:
         rj = None
     if rj is None:
         return jsonify({'error': "Wrong format"}), 400
