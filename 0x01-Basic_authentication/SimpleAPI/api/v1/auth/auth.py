@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Implements authentication"""
-from typing import List, TypeVar
-from flask import request
+from typing import List, Optional, TypeVar
+from flask import Request
 
 User = TypeVar('User')
 
@@ -23,10 +23,13 @@ class Auth:
         else:
             return True
 
-    def authorization_header(self, request=None) -> str:
+    def authorization_header(self, request=None
+                             ) -> Optional[str]:
         """authorization header
         """
-        return None
+        if not request or not request.headers.get("Authorization"):
+            return None
+        return request.headers.get("Authorization")
 
     def current_user(self, request=None) -> User:
         """Get current User"""
