@@ -34,7 +34,7 @@ def authorize_request():
         return None
     if not auth.authorization_header(request):
         abort(401)
-    if not auth.current_user():
+    if not auth.current_user(request):
         abort(403)
 
 

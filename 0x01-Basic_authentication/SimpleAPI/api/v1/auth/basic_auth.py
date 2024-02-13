@@ -4,15 +4,21 @@
 
 import base64
 import binascii
-from typing import Optional, Tuple
+from typing import Optional, Tuple, TypeVar, Union
+
+from flask import Request
+from flask.globals import LocalProxy
 from api.v1.auth.auth import Auth
+from models.user import User
+
+U = TypeVar('U')
 
 
 class BasicAuth(Auth):
     """Implements basic_authentication"""
 
     def extract_base64_authorization_header(self,
-                                            authorization_header: str
+                                            authorization_header: Optional[str]
                                             ) -> Optional[str]:
         """Extract the content of base64 authorization header from the
         header value
@@ -28,7 +34,8 @@ class BasicAuth(Auth):
         return authorization_header[6:]
 
     def decode_base64_authorization_header(self,
-                                           base64_authorization_header: str
+                                           base64_authorization_header:
+                                           Optional[str]
                                            ) -> Optional[str]:
         """Decode the content of basic auth header
         Args:
@@ -43,15 +50,16 @@ class BasicAuth(Auth):
         try:
             return base64.b64decode(base64_authorization_header)\
                 .decode('utf-8')
-        except binascii.Error:
+        except (binascii.Error, UnicodeDecodeError):
             return None
 
-    def extract_user_credentials(self, decoded_base64_authorization_header: str
+    def extract_user_credentials(self, decoded_base64_authorization_header:
+                                 Optional[str]
                                  ) -> Optional[Tuple[str, str]]:
         """Extact username or password from the decoded str
         Args:
             decoded_base64_authorization_header (str): the string to extract
-                login credentials from
+            login credentials from
         Returns:
             - Tuple of username and password
             - None on error
@@ -62,3 +70,39 @@ class BasicAuth(Auth):
             return None
         return decoded_base64_authorization_header.split(':')[0], \
             decoded_base64_authorization_header.split(':')[1]
+
+    def user_object_from_credentials(self, user_email: str, user_pwd: str) -> Optional[U]:
+        """Returns user instance based on the credentials user_email and
+        user_pwd
+        Args:
+            user_email (str): the user email
+            user_pwd (str): The user password
+        Returns:
+            - The user instance
+            - None on error
+        """
+        if not user_email or not user_pwd or \
+                not User.count() or \
+                not User.search({"email": user_email}):
+            return None
+        user = User.search({"email": user_email})[0]
+        if not user.is_valid_password(user_pwd):
+            return None
+        return user
+
+    def current_user(self, request: Optional[LocalProxy] = None) -> Union[U, None]:
+        """Return current login user object
+        Args:
+            request (Request): request object
+        Returns:
+            - A user object
+        """
+        if not request:
+            return None
+        auth_header = self.authorization_header(request)
+        auth_header = self.extract_base64_authorization_header(auth_header)
+        auth_header = self.decode_base64_authorization_header(auth_header)
+        user_cred = self.extract_user_credentials(auth_header)
+        if user_cred:
+            return self.user_object_from_credentials(*user_cred)
+        return None
