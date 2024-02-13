@@ -4,7 +4,7 @@
 
 import base64
 import binascii
-from typing import Optional
+from typing import Optional, Tuple
 from api.v1.auth.auth import Auth
 
 
@@ -45,3 +45,20 @@ class BasicAuth(Auth):
                 .decode('utf-8')
         except binascii.Error:
             return None
+
+    def extract_user_credentials(self, decoded_base64_authorization_header: str
+                                 ) -> Optional[Tuple[str, str]]:
+        """Extact username or password from the decoded str
+        Args:
+            decoded_base64_authorization_header (str): the string to extract
+                login credentials from
+        Returns:
+            - Tuple of username and password
+            - None on error
+        """
+        if not decoded_base64_authorization_header or \
+                type(decoded_base64_authorization_header) is not str or \
+                ":" not in decoded_base64_authorization_header:
+            return None
+        return decoded_base64_authorization_header.split(':')[0], \
+            decoded_base64_authorization_header.split(':')[1]
