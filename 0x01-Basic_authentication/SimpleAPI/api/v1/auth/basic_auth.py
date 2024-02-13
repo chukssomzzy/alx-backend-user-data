@@ -68,10 +68,12 @@ class BasicAuth(Auth):
                 type(decoded_base64_authorization_header) is not str or \
                 ":" not in decoded_base64_authorization_header:
             return None
-        return decoded_base64_authorization_header.split(':')[0], \
-            decoded_base64_authorization_header.split(':')[1]
+        user_email = decoded_base64_authorization_header.split(':')[0]
+        user_pass = decoded_base64_authorization_header[(len(user_email) + 1):]
+        return user_email, user_pass
 
-    def user_object_from_credentials(self, user_email: str, user_pwd: str) -> Optional[U]:
+    def user_object_from_credentials(self, user_email: str, user_pwd:
+                                     str) -> Optional[U]:
         """Returns user instance based on the credentials user_email and
         user_pwd
         Args:
