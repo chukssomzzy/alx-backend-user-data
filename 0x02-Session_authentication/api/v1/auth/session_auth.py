@@ -4,6 +4,7 @@ Session authentication for simple API
 """
 
 
+from os import getenv
 from typing import Optional
 import uuid
 
@@ -59,3 +60,19 @@ class SessionAuth(Auth):
         if isinstance(user, User):
             return user
         return None
+
+    def destroy_session(self, request: Optional[LocalProxy] = None) -> bool:
+        """Destroy the user session on logout
+        Args:
+            request (LocalProxy): localproxy to the request object
+        Returns:
+            - bool
+        """
+        session_name = getenv("SESSION_NAME")
+        if not session_name or not request or not self.session_cookie(request):
+            return False
+        session_id = self.session_cookie(request)
+        if not self.user_id_for_session_id(session_id):
+            return False
+        del self.user_id_by_session_id[session_id]
+        return True

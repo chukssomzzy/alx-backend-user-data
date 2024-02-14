@@ -32,3 +32,14 @@ def login():
         abort(500)
     resp.set_cookie(session_name, session_id)
     return resp
+
+
+@app_views.route('/auth_session/logout',
+                 methods=["DELETE"], strict_slashes=False)
+def logout():
+    """Delete a user from a session
+    """
+    from api.v1.app import auth
+    if not auth.destroy_session(request):
+        abort(404)
+    return {}
