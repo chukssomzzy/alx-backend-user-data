@@ -85,7 +85,8 @@ class BasicAuth(Auth):
             - None on error
         """
         if not user_email or not user_pwd or \
-                not User.count() or \
+                type(user_email) is not str or \
+                type(user_pwd) is not str or \
                 not User.search({"email": user_email}):
             return None
         user = User.search({"email": user_email})[0]
