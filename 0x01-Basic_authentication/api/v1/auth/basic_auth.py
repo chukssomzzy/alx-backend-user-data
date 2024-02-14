@@ -90,9 +90,9 @@ class BasicAuth(Auth):
                 not User.search({"email": user_email}):
             return None
         user = User.search({"email": user_email})[0]
-        if not user.is_valid_password(user_pwd):
-            return None
-        return user
+        if user and user.is_valid_password(user_pwd):
+            return user
+        return None
 
     def current_user(self, request: Optional[LocalProxy]
                      = None) -> Union[U, None]:
