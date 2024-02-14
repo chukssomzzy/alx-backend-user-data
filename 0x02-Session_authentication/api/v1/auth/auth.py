@@ -2,7 +2,11 @@
 """
 Implements authentication
 """
+from os import getenv
 from typing import List, Optional, TypeVar
+
+from flask.globals import LocalProxy
+
 
 User = TypeVar('User')
 
@@ -44,3 +48,20 @@ class Auth:
             - None
         """
         return None
+
+    def session_cookie(self, request: Optional[LocalProxy]) -> Optional[str]:
+        """Get a session_id value from a request object
+        Args:
+            request (LocalProxy): request object
+        Returns:
+            - The content of session_key in the cookie
+            - None on error
+        """
+        cookie_name = getenv("SESSION_NAME")
+        if not cookie_name or not request:
+            return None
+        return request.cookies.get(cookie_name)
+
+
+
+
