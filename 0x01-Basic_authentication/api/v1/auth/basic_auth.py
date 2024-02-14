@@ -93,7 +93,8 @@ class BasicAuth(Auth):
             return None
         return user
 
-    def current_user(self, request: Optional[LocalProxy] = None) -> Union[U, None]:
+    def current_user(self, request: Optional[LocalProxy]
+                     = None) -> Union[U, None]:
         """Return current login user object
         Args:
             request (Request): request object
