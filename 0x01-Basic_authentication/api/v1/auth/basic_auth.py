@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Basic Auth"""
-
-
+"""
+Basic Auth Implemetation
+"""
 import base64
 import binascii
 from typing import Optional, Tuple, TypeVar, Union
 
-from flask import Request
 from flask.globals import LocalProxy
 from api.v1.auth.auth import Auth
 from models.user import User
@@ -15,7 +14,9 @@ U = TypeVar('U')
 
 
 class BasicAuth(Auth):
-    """Implements basic_authentication"""
+    """
+    Implements basic_authentication
+    """
 
     def extract_base64_authorization_header(self,
                                             authorization_header: Optional[str]
