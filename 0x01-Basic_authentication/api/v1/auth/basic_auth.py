@@ -56,7 +56,7 @@ class BasicAuth(Auth):
 
     def extract_user_credentials(self, decoded_base64_authorization_header:
                                  Optional[str]
-                                 ) -> Optional[Tuple[str, str]]:
+                                 ) -> Tuple[Optional[str], Optional[str]]:
         """Extact username or password from the decoded str
         Args:
             decoded_base64_authorization_header (str): the string to extract
@@ -68,7 +68,7 @@ class BasicAuth(Auth):
         if not decoded_base64_authorization_header or \
                 type(decoded_base64_authorization_header) is not str or \
                 ":" not in decoded_base64_authorization_header:
-            return None
+            return None, None
         user_email = decoded_base64_authorization_header.split(':')[0]
         user_pass = decoded_base64_authorization_header[(len(user_email) + 1):]
         return user_email, user_pass
