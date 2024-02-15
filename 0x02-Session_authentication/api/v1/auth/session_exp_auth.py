@@ -21,6 +21,13 @@ class SessionExpAuth(SessionAuth):
             self.session_duration = 0
 
     def create_session(self, user_id: Optional[str] = None) -> Optional[str]:
+        """Create a session that expires after the session duration
+        Args:
+            user_id (str): user id to add to session dict
+        Returns:
+            - session_id (str) of the session key
+            - (None) on error
+        """
         session_id = super().create_session(user_id)
         if not session_id:
             return None
@@ -30,6 +37,13 @@ class SessionExpAuth(SessionAuth):
 
     def user_id_for_session_id(self, session_id:
                                Optional[str] = None) -> Optional[str]:
+        """Get userid from session if the current session hasn't expired
+        Args:
+            session_id (str): session dict key
+        Returns:
+            - user_id from the sesion
+            - (None) if session is expired
+        """
         if not session_id or session_id not in self.user_id_by_session_id:
             return None
         session_dict = self.user_id_by_session_id[session_id]
