@@ -105,7 +105,7 @@ def profile() -> Response:
 
 
 @app.route('/reset_password', methods=["POST"], strict_slashes=False)
-def get_reset_password_token():
+def get_reset_password_token() -> Response:
     """Get reset password token from user
     Args:
         email: user email
