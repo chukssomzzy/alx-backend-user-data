@@ -59,7 +59,9 @@ class DB:
         for key in kwargs:
             if key not in User.__dict__:
                 raise InvalidRequestError
-        user = self._session.query(User).filter_by(**kwargs).one()
+        user = self._session.query(User).filter_by(**kwargs).first()
+        if not user:
+            raise NoResultFound
         return user
 
     def update_user(self, user_id: str, **kwargs: Any) -> None:
