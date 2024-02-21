@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ Auth Module
 """
+from typing import Optional
 import uuid
 import bcrypt
 from sqlalchemy.exc import InvalidRequestError
@@ -66,3 +67,18 @@ class Auth:
         """Generate a uuid
         """
         return str(uuid.uuid4())
+
+    def create_session(self, email: str) -> Optional[str]:
+        """Creates a session
+        Args:
+            email (str): create a session for the current user
+        Returns:
+            - session_id (str): user session id
+        """
+        try:
+            user = self._db.find_user_by(email=email)
+            session_id = self._generate_uuid()
+            self._db.update_user(user.id, session_id=session_id)
+            return session_id
+        except (ValueError, NoResultFound, InvalidRequestError):
+            return None
