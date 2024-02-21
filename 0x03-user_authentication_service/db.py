@@ -62,7 +62,7 @@ class DB:
         user = self._session.query(User).filter_by(**kwargs).one()
         return user
 
-    def update_user(self, user_id, **kwargs):
+    def update_user(self, user_id: str, **kwargs: Any) -> None:
         """Update a user in the db identified by user_id
         user_id (int): integer identifier for  the user
         Args:
