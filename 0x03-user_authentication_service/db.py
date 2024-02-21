@@ -2,6 +2,7 @@
 """DB module
 """
 from sqlalchemy import create_engine
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
@@ -41,3 +42,20 @@ class DB:
         self._session.add(new_user)
         self._session.commit()
         return new_user
+
+    def find_user_by(self, *args, **kwargs):
+        """Filter user table by kwargs
+        args:
+            args (array of str): not used
+            kwargs (dict): key and value to filter user by
+        Returns:
+            - User object
+        Exception:
+            - NoResult
+            - InvalidRequestError
+        """
+        for key in kwargs:
+            if key not in User.__dict__:
+                raise InvalidRequestError()
+        user = self._session.query(User).filter_by(**kwargs).one()
+        return user
