@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Implements flask endpoints"""
-from flask import Flask, Response, abort, jsonify, make_response, request
+from flask import Flask, Response, abort, jsonify, make_response, redirect, request, url_for
+import werkzeug
 
 from auth import Auth
 
@@ -63,6 +64,20 @@ def login() -> Response:
     resp = make_response(jsonify({"email": email, "message": "logged in"}))
     resp.set_cookie("session_id", session_id)
     return resp
+
+
+@app.route('/sessions', methods=["DELETE"], strict_slashes=False)
+def logout() -> werkzeug.wrappers.Response:
+    """Delete a  users session
+    """
+    session_id = request.cookies.get('session_id')
+    if not session_id:
+        abort(403)
+    user = auth.get_user_from_session_id(session_id=session_id)
+    if not user:
+        abort(403)
+    auth.destroy_session(user_id=user.id)
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
