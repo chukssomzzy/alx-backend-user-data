@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Implements flask endpoints"""
-from flask import Flask, abort, jsonify, make_response, request
+from flask import Flask, Response, abort, jsonify, make_response, request
 
 from auth import Auth
 
@@ -40,7 +40,7 @@ def users():
 
 
 @app.route('/sessions', methods=["POST"], strict_slashes=False)
-def login():
+def login() -> Response:
     """Login a user to the user management service
     Forms:
         email (str): the user email
