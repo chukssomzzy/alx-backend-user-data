@@ -86,7 +86,7 @@ def logout():
 
 
 @app.route('/profile', strict_slashes=False)
-def profile():
+def profile() -> Response:
     """Get a user profile information
     Response:
         200:
@@ -101,7 +101,7 @@ def profile():
     user = auth.get_user_from_session_id(session_id=session_id)
     if not user:
         abort(403)
-    return {'email': user.email}
+    return jsonify({'email': user.email})
 
 
 if __name__ == "__main__":
