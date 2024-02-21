@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """DB module
 """
+from typing import Any
 from sqlalchemy import create_engine
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import sessionmaker
@@ -44,7 +45,7 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs):
+    def find_user_by(self, **kwargs: Any) -> User:
         """Filter user table by kwargs
         args:
             args (array of str): not used
