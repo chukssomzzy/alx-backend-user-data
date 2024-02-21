@@ -79,10 +79,29 @@ def logout():
     if not session_id:
         abort(403)
     user = auth.get_user_from_session_id(session_id=session_id)
-    if not user:
+    if user is None:
         abort(403)
     auth.destroy_session(user_id=user.id)
     return redirect(url_for('index'))
+
+
+@app.route('/profile', strict_slashes=False)
+def profile():
+    """Get a user profile information
+    Response:
+        200:
+            user_profile:
+                email: str
+        403:
+            None
+    """
+    session_id = request.cookies.get('session_id')
+    if not session_id:
+        abort(403)
+    user = auth.get_user_from_session_id(session_id=session_id)
+    if not user:
+        abort(403)
+    return {'email': user.email}
 
 
 if __name__ == "__main__":
