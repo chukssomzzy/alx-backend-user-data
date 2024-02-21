@@ -57,10 +57,10 @@ class DB:
         """
         for key in kwargs:
             if key not in User.__dict__:
-                raise InvalidRequestError()
+                raise InvalidRequestError
         user = self._session.query(User).filter_by(**kwargs).first()
         if not user:
-            raise NoResultFound()
+            raise NoResultFound
         return user
 
     def update_user(self, user_id, **kwargs):
@@ -78,8 +78,8 @@ class DB:
             user = self.find_user_by(id=user_id)
             for key, val in kwargs.items():
                 if key not in User.__dict__:
-                    raise ValueError()
+                    raise ValueError
                 setattr(user, key, val)
             self._session.commit()
         except (InvalidRequestError, NoResultFound):
-            raise ValueError()
+            raise ValueError
