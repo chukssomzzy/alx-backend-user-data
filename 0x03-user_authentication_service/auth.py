@@ -106,7 +106,7 @@ class Auth:
         except (NoResultFound, InvalidRequestError):
             return None
 
-    def get_reset_password_token(self, email):
+    def get_reset_password_token(self, email: str) -> str:
         """Generate and set user reset password token
         Args:
             email (str): user email
