@@ -4,6 +4,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
 
 from user import Base, User
@@ -57,5 +58,7 @@ class DB:
         for key in kwargs:
             if key not in User.__dict__:
                 raise InvalidRequestError()
-        user = self._session.query(User).filter_by(**kwargs).one()
+        user = self._session.query(User).filter_by(**kwargs).first()
+        if not user:
+            raise NoResultFound
         return user
