@@ -123,7 +123,8 @@ class Auth:
         except (NoResultFound, InvalidRequestError):
             raise ValueError
 
-    def update_password(self, reset_token: str,  password: str) -> None:
+    def update_password(self, reset_token: Optional[str],
+                        password: Optional[str]) -> None:
         """Update a user password
         Args:
             reset_token (str): A user reset token
@@ -132,6 +133,8 @@ class Auth:
             - None
         """
         try:
+            if type(reset_token) is not str or type(password) is not str:
+                raise ValueError
             user = self._db.find_user_by(reset_token=reset_token)
             self._db.update_user(user.id,
                                  reset_token=None,
