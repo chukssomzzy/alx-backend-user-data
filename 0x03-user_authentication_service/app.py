@@ -34,6 +34,8 @@ def users():
     try:
         email = request.form.get('email')
         password = request.form.get('password')
+        if not email or not password:
+            abort(400)
         auth.register_user(email, password)
         return jsonify({"email": email, "message": "user created"})
     except ValueError:
@@ -144,7 +146,8 @@ def update_password() -> Response:
         email = request.form.get('email')
         password = request.form.get('password')
         reset_token = request.form.get('reset_token')
-
+        if not email or not password or not reset_token:
+            abort(403)
         auth.update_password(reset_token=reset_token, password=password)
         return jsonify({'email': email, 'message': 'Password updated'})
     except ValueError:
