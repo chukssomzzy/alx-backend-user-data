@@ -84,7 +84,7 @@ def logout():
     if user is None:
         abort(403)
     auth.destroy_session(user_id=user.id)
-    return redirect(url_for('index'))
+    return redirect(url_for('index')), 302
 
 
 @app.route('/profile', strict_slashes=False)

@@ -71,8 +71,9 @@ def log_out(session_id: str) -> None:
     """Test logout session
     """
     r = requests.delete(base_url + "/sessions",
-                        cookies={"session_id": session_id})
-    assert r.status_code == 200
+                        cookies={"session_id": session_id},
+                        allow_redirects=False)
+    assert r.status_code == 302
     r = requests.delete(base_url + "/sessions",
                         cookies={"session_id": session_id})
     assert r.status_code == 403
